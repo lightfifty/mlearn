@@ -48,6 +48,11 @@ INSTALLED_APPS = [
 # 指定系统使用我们自定义的用户模型。
 AUTH_USER_MODEL = "users.UserProfile"
 
+# 指定我们自定义的用户验证方法，这里由于是元组，末尾必须带 ，
+AUTHENTICATION_BACKENDS = (
+    'users.views.CustomBackend',
+)
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -128,3 +133,7 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
