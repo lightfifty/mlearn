@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'operaction',
     'xadmin',
     'crispy_forms',
+    'captcha',
 ]
 
 # 指定系统使用我们自定义的用户模型。
@@ -137,3 +138,10 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+
+EMAIL_HOST = "smpt.sina.com"
+EMAIL_PORT = 25
+EMAIL_HOST_USER = "projectsedu@sina.com"
+EMAIL_HOST_PASSWORD = "admin123"
+EMAIL_USE_TLS = "False"
+EMAIL_FROM = "projects"

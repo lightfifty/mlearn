@@ -22,5 +22,6 @@ urlpatterns = [
 
     url('^$', TemplateView.as_view(template_name="index.html"), name="index"),
     # url('^login/$',TemplateView.as_view(template_name="login.html"),name="login")
-    url('^users/', include("users.urls", namespace="users"))
+    url('^users/', include("users.urls", namespace="users")),
+    url(r'^captcha/', include('captcha.urls')),
 ]
