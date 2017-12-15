@@ -7,7 +7,7 @@ from django.db.models import Q
 from django.views.generic.base import View
 
 from .models import UserProfile, EmailVerifyRecord
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, RegisterForm, ForgetForm, ModifyPwdForm
 from utils.email_send import send_register_email
 
 # Create your views here.
@@ -69,8 +69,8 @@ class RegisterView(View):
             user_name = request.POST.get("email", "")
             pass_word = request.POST.get("password", "")
             # 这里其实一个先对数据中是否注册过来判断一下。
-            users = UserProfile.objects.filter(email=user_name)
-            if users.count() == 0:
+
+            if not UserProfile.objects.filter(email=user_name):
                 user_profile = UserProfile()
                 user_profile.username = user_name
                 user_profile.email = user_name
@@ -95,4 +95,61 @@ class ActiveView(View):
                 user = UserProfile.objects.get(email=email)
                 user.is_active = True
                 user.save()
-        return render(request, "index.html")
+            return render(request, "index.html")
+        else:
+            return render(request, "active_fail.html")
+
+
+# 邮箱已经做过处理了，需要修改设置后才能使用
+class ForgetPwdView(View):
+    def get(self, request):
+        forget_form = ForgetForm()
+        return render(request, "forgetpwd.html", {"forget_form": forget_form})
+
+    def post(self, request):
+        forget_form = ForgetForm(request.POST)
+        if forget_form.is_valid():
+            email = request.POST.get("email", "")
+            send_register_email(email=email, send_type="forget")
+            return render(request, "send_success.html", {})
+        else:
+            return render(request, "forgetpwd.html", {"forget_form": forget_form})
+
+
+class ResetView(View):
+    def get(self, request, active_code):
+        all_records = EmailVerifyRecord.objects.filter(code=active_code)
+        if all_records:
+            for record in all_records:
+                email = record.email
+            return render(request, "password_reset.html", {"email": email})
+        else:
+            return render(request, "active_fail.html")
+        return render(request, "login.html")
+
+
+# 这里因为密码填错或者输入有误的时候回重复刷新页面，所以把修改的单独出来，需要对get请求和伪造的post请求进行处理，返回激活码过期。
+class ModifyPwdView(View):
+    def get(self, request):
+        return render(request, "active_fail.html")
+
+    def post(self, request):
+        modify_form = ModifyPwdForm(request.POST)
+        email = request.POST.get("email", "")
+        if modify_form.is_valid():
+            password = request.POST.get("password", "")
+            password2 = request.POST.get("password2", "")
+            if password != password2:
+                return render(request, "password_reset.html", {"email": email, "msg": "请输入相同的密码！"})
+            else:
+                user = UserProfile.objects.get(email=email)
+                user.password = make_password(password)
+                # 这里密码修改完应该让code失效才对
+                user.code = "createnull"
+                user.save()
+                return render(request, "login.html", {})
+        else:
+            if email == "":
+                return render(request, "active_fail.html")
+            else:
+                return render(request, "password_reset.html", {"email": email, "modify_form": modify_form})
