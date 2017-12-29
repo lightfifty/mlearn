@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'xadmin',
     'crispy_forms',
     'captcha',
+    'pure_pagination',
 ]
 
 # 指定系统使用我们自定义的用户模型。
@@ -78,6 +79,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -145,3 +147,7 @@ EMAIL_HOST_USER = "projectsedu@sina.com"
 EMAIL_HOST_PASSWORD = "admin123"
 EMAIL_USE_TLS = "False"
 EMAIL_FROM = "projects"
+
+# 上传的资源文件的配置
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

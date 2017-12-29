@@ -15,13 +15,20 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.views.generic import TemplateView
+from django.views.static import serve
 import xadmin
+
+from mlearn.settings import MEDIA_ROOT
 
 urlpatterns = [
     url(r'^xadmin/', xadmin.site.urls),
 
     url('^$', TemplateView.as_view(template_name="index.html"), name="index"),
-    # url('^login/$',TemplateView.as_view(template_name="login.html"),name="login")
     url('^users/', include("users.urls", namespace="users")),
+    url('^organization/', include("organization.urls", namespace="organization")),
+    # 配置验证码的访问路径
     url(r'^captcha/', include('captcha.urls')),
+    # 配置上传文件的访问处理函数
+    url(r'^media/(?P<path>.*)$', serve, {"document_root": MEDIA_ROOT})
+
 ]
