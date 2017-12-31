@@ -3,6 +3,9 @@
 {% block custom_title %}
     机构首页
 {% endblock %}
+{% block page_path %}
+    <a href="{% url 'organization:orghome'  course_org.id %}">机构首页</a>
+{% endblock %}
 
 {% block right_form %}
     <div class="right companycenter layout grouping">

@@ -52,7 +52,7 @@
                     </div>
                     <div class="btn fr collectionbtn  notlogin
                  " data-favid="22" data-fav-type="1">
-                        收藏
+                        {% if has_fav %}已收藏{% else %}收藏{% endif %}
                     </div>
 
                 </div>
@@ -74,10 +74,14 @@
     <div class="wp list personal_list comp">
         <div class="left">
             <ul>
-                <li class="active2"><a href="{% url 'organization:orglist' %}">机构首页</a></li>
-                <li class=""><a href="org-detail-course.html">机构课程</a></li>
-                <li class=""><a href="org-detail-desc.html">机构介绍</a></li>
-                <li class=""><a href="org-detail-teachers.html">机构讲师</a></li>
+                <li class="{% ifequal current_page 'home' %}active2{% endifequal %}"><a
+                        href="{% url 'organization:orghome' course_org.id %}">机构首页</a></li>
+                <li class="{% ifequal current_page 'course' %}active2{% endifequal %}"><a
+                        href="{% url 'organization:orgcourse' course_org.id %}">机构课程</a></li>
+                <li class="{% ifequal current_page 'desc' %}active2{% endifequal %}"><a
+                        href="{% url 'organization:orgdesc' course_org.id %}">机构介绍</a></li>
+                <li class="{% ifequal current_page 'teacher' %}active2{% endifequal %}"><a
+                        href="{% url 'organization:orgteacher' course_org.id %}">机构讲师</a></li>
             </ul>
         </div>
         {% block right_form %}
@@ -113,16 +117,16 @@
         $.ajax({
             cache: false,
             type: "POST",
-            url: "/org/add_fav/",
+            url: "{% url 'organization:add_fav' %}",
             data: {'fav_id': fav_id, 'fav_type': fav_type},
             async: true,
             beforeSend: function (xhr, settings) {
-                xhr.setRequestHeader("X-CSRFToken", "5I2SlleZJOMUX9QbwYLUIAOshdrdpRcy");
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
             },
             success: function (data) {
                 if (data.status == 'fail') {
                     if (data.msg == '用户未登录') {
-                        window.location.href = "login.html";
+                        window.location.href = "{% url 'users:login' %}";
                     } else {
                         alert(data.msg)
                     }
@@ -135,7 +139,7 @@
     }
 
     $('.collectionbtn').on('click', function () {
-        add_fav($(this), 1, 2);
+        add_fav($(this), {{ course_org.id }}, 2);
     });
 
     $(function () {
