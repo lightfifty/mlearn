@@ -9,12 +9,12 @@ from django.conf.urls import url
 
 
 # LoginView.as_view()，是以类的方式编写控制函数时url的写法。
-from organization.views import OrgView,UserAskView
+from organization.views import OrgView,UserAskView,OrgHomeView
 
 urlpatterns = [
     url(r'^$', OrgView.as_view(), name="orglist"),
     url(r'^addask/$', UserAskView.as_view(), name="addask"),
-    url(r'^home/(?P<org_id>\d+)/$', UserAskView.as_view(), name="home"),
+    url(r'^home/(?P<org_id>\d+)/$', OrgHomeView.as_view(), name="orghome"),
     # url(r'^login/', LoginView.as_view(), name="login"),
     # url(r'^register/', RegisterView.as_view(), name="register"),
     # url(r'^active/(?P<active_code>.*)/$', ActiveView.as_view(), name="active"),
