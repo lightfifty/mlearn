@@ -38,13 +38,16 @@ class CourseOrg(models.Model):
     class Meta:
         verbose_name = u"课程机构"
         verbose_name_plural = verbose_name
+    # 获取课程机构的教师数量
+    def get_teacher_nums(self):
+        return self.teacher_set.all().count()
 
     def __str__(self):
         return self.name
 
 
 class Teacher(models.Model):
-    image = models.FileField(upload_to="teacher/%Y/%m", verbose_name=u"头像", max_length=100,null=True)
+    image = models.FileField(upload_to="teacher/%Y/%m", verbose_name=u"头像", max_length=100, null=True)
     org = models.ForeignKey(CourseOrg, verbose_name=u"所属机构")
     name = models.CharField(max_length=20, verbose_name=u"教师名")
     work_years = models.IntegerField(default=0, verbose_name=u"工作年限")

@@ -23,9 +23,10 @@ from mlearn.settings import MEDIA_ROOT
 urlpatterns = [
     url(r'^xadmin/', xadmin.site.urls),
 
-    url('^$', TemplateView.as_view(template_name="index.html"), name="index"),
-    url('^users/', include("users.urls", namespace="users")),
-    url('^organization/', include("organization.urls", namespace="organization")),
+    url(r'^$', TemplateView.as_view(template_name="index.html"), name="index"),
+    url(r'^users/', include("users.urls", namespace="users")),
+    url(r'^organization/', include("organization.urls", namespace="organization")),
+    url(r'^courses/', include("courses.urls", namespace="courses")),
     # 配置验证码的访问路径
     url(r'^captcha/', include('captcha.urls')),
     # 配置上传文件的访问处理函数

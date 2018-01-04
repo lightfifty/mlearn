@@ -84,6 +84,7 @@ class OrgHomeView(View):
     def get(self, request, org_id):
         current_page = 'home'
         course_org = CourseOrg.objects.get(id=int(org_id))
+        #判断用户是否已经收藏来决定在网页上显示的字符。
         has_fav=False
         if request.user.is_authenticated():
             if UserFavorite.objects.filter(user=request.user,fav_id=course_org.id,fav_type=2):
@@ -165,8 +166,8 @@ class AddFavView(View):
     """
 
     def post(self, request):
-        fav_id = int(request.POST.get('fav_id', ''))
-        fav_type = int(request.POST.get('fav_type', ''))
+        fav_id = int(request.POST.get('fav_id', 0))
+        fav_type = int(request.POST.get('fav_type', 0))
         # 首先判断用户是否登陆了
         if not request.user.is_authenticated():
             # 如果未登陆则返回fail
